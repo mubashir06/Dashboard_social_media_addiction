@@ -13,7 +13,16 @@ st.set_page_config(
 
 )
 
+COLORS = {
 
+    "social":"#3B82F6",
+    "mental":"#EF4444",
+    "sleep":"#8B5CF6",
+    "activity":"#10B981",
+    "academic":"#F59E0B",
+    "neutral":"#64748B"
+
+}
 # ======================
 # LOAD DATA
 # ======================
@@ -52,93 +61,58 @@ st.subheader(
 
 c1,c2,c3,c4=st.columns(4)
 
-
 with c1:
 
     st.metric(
-
-        "Average Social Media Hours",
-
-        round(
-            df[
-            'daily_social_media_hours'
-            ].mean(),
-            2
-        )
-
+        "Avg Social Media Hours",
+        round(df['daily_social_media_hours'].mean(),2)
     )
-
 
 with c2:
 
-    st.metric(
+    avg_sleep=round(df['sleep_hours'].mean(),2)
 
-        "Average Sleep Hours",
+    if avg_sleep >= 8:
+        st.success(f"Sleep Hours: {avg_sleep}")
 
-        round(
-            df[
-            'sleep_hours'
-            ].mean(),
-            2
-        )
-
-    )
-
+    else:
+        st.warning(f"Sleep Hours: {avg_sleep}")
 
 with c3:
 
     st.metric(
-
-        "Average Mental Health Score",
-
-        round(
-            df[
-            'mental_health_score'
-            ].mean(),
-            2
-        )
-
+        "Mental Health Score",
+        round(df['mental_health_score'].mean(),2)
     )
-
 
 with c4:
 
     depression_rate=round(
-
-    (
-
-    len(
-
-    df[
-    df[
-    'depression_status'
-    ]
-    ==
-    'Depression Risk'
-    ]
-
+        (
+            len(df[df['depression_status']=="Depression Risk"])
+            /len(df)
+        )*100,
+        2
     )
 
-    /
+    if depression_rate < 20:
 
-    len(df)
+        st.success(
+            f"Depression Risk: {depression_rate}%"
+        )
 
-    )*100
+    elif depression_rate < 40:
 
-    ,
+        st.warning(
+            f"Depression Risk: {depression_rate}%"
+        )
 
-    2
+    else:
 
-    )
+        st.error(
+            f"Depression Risk: {depression_rate}%"
+        )
 
-
-    st.metric(
-
-        "Depression Risk %",
-
-        f"{depression_rate}%"
-
-    )
 
 
 st.markdown("---")
@@ -176,15 +150,35 @@ with c1:
 
 with c2:
 
-    fig=px.pie(
+    gender_counts = df['gender'].value_counts()
 
-        df,
+    fig = px.pie(
 
-        names='gender',
+        values=gender_counts.values,
 
-        hole=.5,
+        names=gender_counts.index,
 
-        title='Gender Distribution'
+        hole=0.55,
+
+        title="Gender Distribution"
+
+    )
+
+    fig.update_traces(
+
+        textposition='inside',
+
+        textinfo='percent+label',
+
+        pull=[0.03]*len(gender_counts)
+
+    )
+
+    fig.update_layout(
+
+        legend_title="Gender",
+
+        title_x=0.25
 
     )
 
@@ -236,11 +230,27 @@ with c2:
 
     fig=px.histogram(
 
-        df,
+    df,
 
-        x='daily_social_media_hours',
+    x='daily_social_media_hours',
 
-        title='Daily Social Media Usage'
+    nbins=20,
+
+    color_discrete_sequence=[
+        COLORS['social']
+    ],
+
+    title='Daily Social Media Usage'
+
+)
+
+    fig.add_vline(
+
+        x=df['daily_social_media_hours'].mean(),
+
+        line_color="red",
+
+        annotation_text="Mean"
 
     )
 
@@ -248,7 +258,6 @@ with c2:
         fig,
         use_container_width=True
     )
-
 
 # ======================
 # USER TYPES
@@ -282,6 +291,36 @@ fig,
 use_container_width=True
 )
 
+st.subheader(
+    "Mental Health Risk Distribution"
+)
+
+fig=px.histogram(
+
+    df,
+
+    x='mental_health_status',
+
+    color='mental_health_status',
+
+    title='Mental Health Status Distribution',
+
+    color_discrete_map={
+
+        "Low Risk":"green",
+
+        "Moderate Risk":"orange",
+
+        "High Risk":"red"
+
+    }
+
+)
+
+st.plotly_chart(
+    fig,
+    use_container_width=True
+)
 
 st.markdown("---")
 

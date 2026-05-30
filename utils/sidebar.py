@@ -113,21 +113,6 @@ def sidebar_filters(df):
 
     st.sidebar.markdown("---")
 
-    st.sidebar.markdown(
-    """
-    ### Hypothesis Legend
-
-    🟣 Positive correlation
-
-    🟠 Negative correlation
-
-    ⚪ Neutral
-
-    🔴 Risk indicator
-
-    📈 H1–H5
-    """
-    )
-
+ 
 
     return filtered_df
