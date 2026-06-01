@@ -295,32 +295,32 @@ st.subheader(
     "Mental Health Risk Distribution"
 )
 
-fig=px.histogram(
+# fig=px.histogram(
 
-    df,
+#     df,
 
-    x='mental_health_status',
+#     x='mental_health_status',
 
-    color='mental_health_status',
+#     color='mental_health_status',
 
-    title='Mental Health Status Distribution',
+#     title='Mental Health Status Distribution',
 
-    color_discrete_map={
+#     color_discrete_map={
 
-        "Low Risk":"green",
+#         "Low Risk":"green",
 
-        "Moderate Risk":"orange",
+#         "Moderate Risk":"orange",
 
-        "High Risk":"red"
+#         "High Risk":"red"
 
-    }
+#     }
 
-)
+# )
 
-st.plotly_chart(
-    fig,
-    use_container_width=True
-)
+# st.plotly_chart(
+#     fig,
+#     use_container_width=True
+# )
 
 st.markdown("---")
 
